@@ -1,0 +1,56 @@
+package dungeon.entities;
+
+import dungeon.interfaces.SkillCaster;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Player extends Entity implements SkillCaster {
+    private int level;
+    private int range;
+    private int gold;
+    private List<Player> team;  // recruited allies
+
+    public Player(String name, int maxHp, int defense, int attackDamage, int speed, int range) {
+        super(name, maxHp, defense, attackDamage, speed);
+        this.level  = 1;
+        this.range  = range;
+        this.gold   = 0;
+        this.team   = new ArrayList<>();
+    }
+
+    /** Called at the end of each cleared floor */
+    public void collectReward(int goldAmount) {
+        this.gold += goldAmount;
+        System.out.println(getName() + " collected " + goldAmount + " gold! Total: " + this.gold);
+    }
+
+    /** Add a recruited ally to the party */
+    public boolean recruitCharacter(Player ally) {
+        if (team.size() >= 4) {  // max party size = 5 (player + 4 allies)
+            System.out.println("Party is full!");
+            return false;
+        }
+        team.add(ally);
+        System.out.println(ally.getName() + " the " + ally.getClass().getSimpleName() + " joined the party!");
+        return true;
+    }
+
+    /** Spend gold (returns false if not enough) */
+    public boolean spendGold(int amount) {
+        if (gold < amount) return false;
+        gold -= amount;
+        return true;
+    }
+
+    public int getLevel()         { return level; }
+    public int getRange()         { return range; }
+    public int getGold()          { return gold; }
+    public List<Player> getTeam() { return team; }
+
+    /** Returns class names already in team (to avoid duplicates in shop) */
+    public List<String> getRecruitedClasses() {
+        List<String> names = new ArrayList<>();
+        for (Player p : team) names.add(p.getClass().getSimpleName());
+        return names;
+    }
+}
