@@ -12,17 +12,12 @@ public class GameStatus {
     private boolean isGameOver;
     private boolean hasWon;
 
-    // Gold reward per floor cleared
     private static final int GOLD_PER_FLOOR = 50;
 
     public GameStatus() {
         this.shop = new Shop();
     }
 
-    /**
-     * Starts the game. Player always begins as Knight per the design doc.
-     * The player's chosen name is applied to the Knight.
-     */
     public void startGame(String playerName, String playerClass) throws GameException {
         switch (playerClass.toLowerCase()) {
             case "knight":  this.player = new Knight(playerName);  break;
@@ -41,13 +36,11 @@ public class GameStatus {
                 + playerClass + " enters the dungeon.");
     }
 
-    /** Called when the current floor's enemy is defeated. Awards gold. */
     public void floorCleared() {
         player.collectReward(GOLD_PER_FLOOR);
         System.out.println("Floor " + currentFloor.getFloorNumber() + " cleared!");
     }
 
-    /** Descend to next floor */
     public void nextFloor() {
         try {
             currentFloor.incrementFloor();

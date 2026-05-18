@@ -5,7 +5,6 @@ import dungeon.entities.players.*;
 import java.util.*;
 
 public class Shop {
-    // All recruitable allies with their gold prices
     private static final Map<String, Integer> PRICES = new LinkedHashMap<>();
     static {
         PRICES.put("Wizard",  80);
@@ -15,9 +14,6 @@ public class Shop {
         PRICES.put("Rogue",   75);
     }
 
-    /**
-     * Returns a list of ally names that the player hasn't recruited yet.
-     */
     public List<String> getAvailableCharacters(List<String> alreadyRecruited) {
         List<String> available = new ArrayList<>();
         for (String name : PRICES.keySet()) {
@@ -32,9 +28,6 @@ public class Shop {
         return PRICES.getOrDefault(characterClass, 0);
     }
 
-    /**
-     * Attempts to buy a character. Returns the new Player ally or null if not enough gold.
-     */
     public Player buyCharacter(String characterClass, String heroName, int playerGold) {
         int price = getPrice(characterClass);
         if (playerGold < price) return null;

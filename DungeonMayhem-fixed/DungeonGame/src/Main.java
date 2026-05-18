@@ -1,4 +1,6 @@
 import dungeon.game.GameStatus;
+import dungeon.ui.DungeonMayhemGUI;
+
 import javax.swing.SwingUtilities;
 
 public class Main {
