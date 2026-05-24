@@ -4,7 +4,7 @@ import dungeon.entities.Player;
 import dungeon.entities.Enemy;
 import dungeon.exceptions.GameException;
 import dungeon.game.GameStatus;
-import dungeon.shop.Shop;
+import dungeon.interfaces.TransactionSystem;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -27,11 +27,11 @@ public class DungeonMayhemGUI extends JFrame {
     private String heroName = "Hero";
 
     private JPanel partyPanel;
-    private JLabel activeHeroNameLabel, activeHeroHpText;
-    private HealthBar activeHeroHpBar;
+    private JLabel activeHeroNameLabel, activeHeroHpText, activeHeroMpText;
+    private HealthBar activeHeroHpBar, activeHeroMpBar;
 
     private JLabel enemyNameLabel, floorLabel;
-    private HealthBar enemyHpBar;
+    private HealthBar enemyHpBar, enemyMpBar;
 
     private JTextPane battleLog;
     private JButton basicBtn, skill1Btn, skill2Btn, skill3Btn;
@@ -95,6 +95,8 @@ public class DungeonMayhemGUI extends JFrame {
                 c = GUIStyle.TEXT_MUTED;
             } else if (line.contains("FLOOR") || line.contains("appears!")) {
                 c = GUIStyle.ACCENT_BLUE;
+            } else if (line.contains("mana") || line.contains("MP")) {
+                c = GUIStyle.ACCENT_BLUE;
             }
 
             javax.swing.text.StyledDocument doc = battleLog.getStyledDocument();
@@ -139,15 +141,15 @@ public class DungeonMayhemGUI extends JFrame {
 
                 name = name.trim();
                 if (name.isEmpty()) {
-                    throw new dungeon.exceptions.GameException("A hero must have a name!");
+                    throw new dungeon.exceptions.InvalidNameException("A hero must have a name!");
                 }
                 if (name.contains(" ")) {
-                    throw new dungeon.exceptions.GameException("Spaces are not allowed in the hero's name!");
+                    throw new dungeon.exceptions.InvalidNameException("Spaces are not allowed in the hero's name!");
                 }
 
                 heroName = name;
                 cardLayout.show(mainPanel, "CLASS_SELECT");
-            } catch (dungeon.exceptions.GameException ex) {
+            } catch (dungeon.exceptions.InvalidNameException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -162,63 +164,104 @@ public class DungeonMayhemGUI extends JFrame {
         panel.setBackground(GUIStyle.BG_MAIN);
         panel.setBorder(new EmptyBorder(30, 30, 30, 30));
 
-        JLabel title = GUIStyle.createStyledLabel("Choose Your Destiny", GUIStyle.TEXT_MAIN, new Font("Segoe UI", Font.BOLD, 32));
-        panel.add(title, BorderLayout.NORTH);
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setOpaque(false);
+        JLabel title = GUIStyle.createStyledLabel("CHARACTER SELECT", GUIStyle.TEXT_MAIN, new Font("Segoe UI", Font.BOLD, 36));
+        headerPanel.add(title, BorderLayout.WEST);
+
+        // Add a back button if needed, but let's just stick to the title.
+        panel.add(headerPanel, BorderLayout.NORTH);
 
         JPanel splitPane = new JPanel(new BorderLayout(30, 0));
         splitPane.setOpaque(false);
 
-        JPanel classList = new JPanel(new GridLayout(6, 1, 10, 10));
-        classList.setOpaque(false);
-        classList.setPreferredSize(new Dimension(250, 0));
+        // LEFT: Class Grid
+        JPanel classListWrapper = new JPanel(new BorderLayout());
+        classListWrapper.setOpaque(false);
+        classListWrapper.setBorder(new EmptyBorder(0, 0, 0, 20));
 
-        String[] classes = {"Knight", "Archer", "Rogue", "Wizard", "Priest", "Paladin"};
+        JPanel classList = new JPanel(new GridLayout(3, 1, 0, 20));
+        classList.setOpaque(false);
+        classList.setPreferredSize(new Dimension(250, 250));
+
+        String[] classes = {"Knight", "Archer", "Rogue"};
         ButtonGroup bg = new ButtonGroup();
+
+        // To hold the image placeholder
+        JLabel portraitLabel = new JLabel();
+        portraitLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        portraitLabel.setVerticalAlignment(SwingConstants.CENTER);
+        portraitLabel.setPreferredSize(new Dimension(300, 500));
+
+        JPanel portraitPanel = new JPanel(new BorderLayout());
+        portraitPanel.setOpaque(false);
+        portraitPanel.add(portraitLabel, BorderLayout.CENTER);
 
         JPanel detailsPanel = new JPanel(new BorderLayout());
         detailsPanel.setOpaque(false);
+        detailsPanel.setPreferredSize(new Dimension(350, 0));
 
         for (String cls : classes) {
             JToggleButton btn = GUIStyle.createStyledToggleButton(cls);
-            btn.setFont(GUIStyle.FONT_HEADER); // keep header font
+            btn.setFont(GUIStyle.FONT_HEADER);
             if (cls.equals("Knight")) btn.setSelected(true);
             btn.addActionListener(e -> {
                 selectedClass = cls;
-                updateClassDetails(detailsPanel);
+                updateClassDetails(detailsPanel, portraitLabel);
             });
             bg.add(btn);
             classList.add(btn);
         }
+        classListWrapper.add(classList, BorderLayout.NORTH);
 
-        updateClassDetails(detailsPanel);
+        updateClassDetails(detailsPanel, portraitLabel);
 
-        splitPane.add(classList, BorderLayout.WEST);
-        splitPane.add(detailsPanel, BorderLayout.CENTER);
+        splitPane.add(classListWrapper, BorderLayout.WEST);
+        splitPane.add(portraitPanel, BorderLayout.CENTER);
+        splitPane.add(detailsPanel, BorderLayout.EAST);
+
         panel.add(splitPane, BorderLayout.CENTER);
 
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setOpaque(false);
-        JButton confirmBtn = GUIStyle.createStyledButton("Confirm Selection", true);
-        confirmBtn.setPreferredSize(new Dimension(200, 50));
+        bottomPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+
+        JButton confirmBtn = GUIStyle.createStyledButton("SELECT HERO", true);
+        confirmBtn.setPreferredSize(new Dimension(250, 50));
         confirmBtn.addActionListener(e -> startGame());
-        bottomPanel.add(confirmBtn);
+
+        JPanel confirmWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        confirmWrapper.setOpaque(false);
+        confirmWrapper.add(confirmBtn);
+
+        bottomPanel.add(confirmWrapper, BorderLayout.CENTER);
         panel.add(bottomPanel, BorderLayout.SOUTH);
 
         return panel;
     }
 
-    private void updateClassDetails(JPanel detailsPanel) {
+    private void updateClassDetails(JPanel detailsPanel, JLabel portraitLabel) {
         detailsPanel.removeAll();
-        detailsPanel.setBackground(GUIStyle.BG_PANEL);
-        detailsPanel.setBorder(GUIStyle.createCardBorder());
+
+        // -------------------------------------------------------------
+        // INSERT CUSTOM IMAGE PATHS HERE
+        // Replace the path with your own 8-bit image paths.
+        // e.g. String imagePath = "assets/images/" + selectedClass.toLowerCase() + ".png";
+        // ImageIcon icon = new ImageIcon(imagePath);
+        // portraitLabel.setIcon(icon);
+        // For now, we will just use a text placeholder:
+        portraitLabel.setText("<html><div style='text-align: center; color: #888888; font-size: 20px; border: 2px dashed #444444; padding: 150px 50px;'>[ " + selectedClass + " Image ]<br><br><span style='font-size: 12px;'>Insert 8-bit image here</span></div></html>");
+        portraitLabel.setIcon(null);
+        // -------------------------------------------------------------
 
         Map<String, int[]> stats = Map.of(
-                "Knight",  new int[]{120, 15, 10, 5},
-                "Archer",  new int[]{80,  20, 5,  15},
-                "Rogue",   new int[]{70,  25, 3,  20},
-                "Wizard",  new int[]{60,  30, 2,  12},
-                "Priest",  new int[]{110, 15, 12, 11},
-                "Paladin", new int[]{140, 18, 15, 8}
+                // HP, MP, ATK, DEF, SPD
+                "Knight",  new int[]{150, 50,  25, 20, 10},
+                "Archer",  new int[]{100, 60,  20, 10, 15},
+                "Rogue",   new int[]{90,  70,  22, 8,  25},
+                "Wizard",  new int[]{80,  120, 30, 5,  12},
+                "Priest",  new int[]{110, 100, 15, 12, 11},
+                "Paladin", new int[]{140, 80,  20, 22, 8}
         );
         Map<String, String> desc = Map.of(
                 "Knight",  "A heavily armored warrior with high HP and defense. Melee combatant.",
@@ -231,33 +274,61 @@ public class DungeonMayhemGUI extends JFrame {
 
         int[] s = stats.get(selectedClass);
 
-        JPanel headerInfo = new JPanel(new GridLayout(2,1));
+        JPanel headerInfo = new JPanel(new BorderLayout(0, 10));
         headerInfo.setOpaque(false);
-        headerInfo.add(GUIStyle.createStyledLabel(selectedClass, GUIStyle.TEXT_MAIN, GUIStyle.FONT_TITLE));
+        JLabel nameLbl = GUIStyle.createStyledLabel(selectedClass, GUIStyle.TEXT_MAIN, new Font("Segoe UI", Font.BOLD, 42));
+        headerInfo.add(nameLbl, BorderLayout.NORTH);
 
         JTextArea descArea = new JTextArea(desc.get(selectedClass));
         descArea.setLineWrap(true);
         descArea.setWrapStyleWord(true);
         descArea.setEditable(false);
         descArea.setOpaque(false);
-        descArea.setFont(GUIStyle.FONT_BODY);
-        descArea.setForeground(GUIStyle.TEXT_MUTED);
-        headerInfo.add(descArea);
+        descArea.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+        descArea.setForeground(Color.LIGHT_GRAY);
+        headerInfo.add(descArea, BorderLayout.CENTER);
 
-        JPanel statsGrid = new JPanel(new GridLayout(2, 2, 20, 20));
+        JPanel statsGrid = new JPanel(new GridLayout(5, 1, 0, 15));
         statsGrid.setOpaque(false);
         statsGrid.setBorder(new EmptyBorder(30, 0, 0, 0));
 
-        statsGrid.add(createStatBox("HP", s[0], 150, GUIStyle.ACCENT_GREEN));
-        statsGrid.add(createStatBox("Attack", s[1], 40, GUIStyle.ACCENT_RED));
-        statsGrid.add(createStatBox("Defense", s[2], 20, GUIStyle.ACCENT_BLUE));
-        statsGrid.add(createStatBox("Speed", s[3], 30, GUIStyle.ACCENT_PURPLE));
+        statsGrid.add(createStatRow("HP", s[0], 150, GUIStyle.ACCENT_GREEN));
+        statsGrid.add(createStatRow("MP", s[1], 120, GUIStyle.ACCENT_BLUE));
+        statsGrid.add(createStatRow("Attack", s[2], 30, GUIStyle.ACCENT_RED));
+        statsGrid.add(createStatRow("Defense", s[3], 25, new Color(150, 150, 150)));
+        statsGrid.add(createStatRow("Speed", s[4], 30, GUIStyle.ACCENT_PURPLE));
 
         detailsPanel.add(headerInfo, BorderLayout.NORTH);
         detailsPanel.add(statsGrid, BorderLayout.CENTER);
 
         detailsPanel.revalidate();
         detailsPanel.repaint();
+    }
+
+    private JPanel createStatRow(String label, int value, int max, Color color) {
+        JPanel panel = new JPanel(new BorderLayout(10, 0));
+        panel.setOpaque(false);
+
+        JLabel lbl = GUIStyle.createStyledLabel(label, GUIStyle.TEXT_MUTED, new Font("Segoe UI", Font.BOLD, 14));
+        lbl.setPreferredSize(new Dimension(80, 20));
+
+        JLabel valLbl = GUIStyle.createStyledLabel(String.valueOf(value), GUIStyle.TEXT_MAIN, new Font("Segoe UI", Font.BOLD, 14));
+        valLbl.setPreferredSize(new Dimension(40, 20));
+        valLbl.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        HealthBar bar = new HealthBar(value, max, color, false, "");
+        bar.setPreferredSize(new Dimension(150, 8));
+
+        JPanel barWrapper = new JPanel(new BorderLayout());
+        barWrapper.setOpaque(false);
+        barWrapper.setBorder(new EmptyBorder(6, 0, 6, 0));
+        barWrapper.add(bar, BorderLayout.CENTER);
+
+        panel.add(lbl, BorderLayout.WEST);
+        panel.add(barWrapper, BorderLayout.CENTER);
+        panel.add(valLbl, BorderLayout.EAST);
+
+        return panel;
     }
 
     private JPanel createStatBox(String name, int value, int max, Color color) {
@@ -285,7 +356,7 @@ public class DungeonMayhemGUI extends JFrame {
             gameStatus.startGame(heroName, selectedClass);
             startNewBattle();
             cardLayout.show(mainPanel, "BATTLE");
-        } catch (GameException ex) {
+        } catch (dungeon.exceptions.UnknownClassException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -316,9 +387,19 @@ public class DungeonMayhemGUI extends JFrame {
         activeHeroNameLabel = GUIStyle.createStyledLabel("Hero", GUIStyle.TEXT_MAIN, GUIStyle.FONT_HEADER);
         activeHeroHpBar = new HealthBar(100, 100, GUIStyle.ACCENT_GREEN, false, "");
         activeHeroHpText = GUIStyle.createStyledLabel("100/100 HP", GUIStyle.TEXT_MUTED, GUIStyle.FONT_BODY);
-        playerCard.add(activeHeroNameLabel);
-        playerCard.add(activeHeroHpBar);
-        playerCard.add(activeHeroHpText);
+        activeHeroMpBar = new HealthBar(50, 50, GUIStyle.ACCENT_BLUE, false, "");
+        activeHeroMpText = GUIStyle.createStyledLabel("50/50 MP", GUIStyle.TEXT_MUTED, GUIStyle.FONT_BODY);
+
+        JPanel playerBars = new JPanel(new GridLayout(4, 1, 0, 0));
+        playerBars.setOpaque(false);
+        playerBars.add(activeHeroHpBar);
+        playerBars.add(activeHeroHpText);
+        playerBars.add(activeHeroMpBar);
+        playerBars.add(activeHeroMpText);
+
+        playerCard.setLayout(new BorderLayout());
+        playerCard.add(activeHeroNameLabel, BorderLayout.NORTH);
+        playerCard.add(playerBars, BorderLayout.CENTER);
 
         JPanel floorCard = createStatCard();
         floorLabel = GUIStyle.createStyledLabel("FLOOR 1", GUIStyle.ACCENT_BLUE, GUIStyle.FONT_HEADER);
@@ -329,8 +410,16 @@ public class DungeonMayhemGUI extends JFrame {
         JPanel enemyCard = createStatCard();
         enemyNameLabel = GUIStyle.createStyledLabel("Enemy", GUIStyle.ACCENT_RED, GUIStyle.FONT_HEADER);
         enemyHpBar = new HealthBar(100, 100, GUIStyle.ACCENT_RED, true, "HP ");
-        enemyCard.add(enemyNameLabel);
-        enemyCard.add(enemyHpBar);
+        enemyMpBar = new HealthBar(100, 100, GUIStyle.ACCENT_BLUE, true, "MP ");
+
+        JPanel enemyBars = new JPanel(new GridLayout(2, 1, 0, 5));
+        enemyBars.setOpaque(false);
+        enemyBars.add(enemyHpBar);
+        enemyBars.add(enemyMpBar);
+
+        enemyCard.setLayout(new BorderLayout());
+        enemyCard.add(enemyNameLabel, BorderLayout.NORTH);
+        enemyCard.add(enemyBars, BorderLayout.CENTER);
 
         header.add(playerCard);
         header.add(floorCard);
@@ -470,7 +559,10 @@ public class DungeonMayhemGUI extends JFrame {
             return;
         }
 
-        executePlayerMove(activePlayer, actionType);
+        boolean actionSuccessful = executePlayerMove(activePlayer, actionType);
+        if (!actionSuccessful) {
+            return;
+        }
 
         if (currentEnemy.isDead()) {
             handleVictory();
@@ -482,18 +574,25 @@ public class DungeonMayhemGUI extends JFrame {
         refreshPartyList();
     }
 
-    private void executePlayerMove(Player p, int type) {
-        switch (type) {
-            case 0: p.basicAttack(currentEnemy); break;
-            case 1: p.useSkillOne(currentEnemy); break;
-            case 2: p.useSkillTwo(currentEnemy); break;
-            case 3: p.useSkillThree(currentEnemy); break;
+    private boolean executePlayerMove(Player p, int type) {
+        try {
+            switch (type) {
+                case 0: p.basicAttack(currentEnemy); break;
+                case 1: p.useSkillOne(currentEnemy); break;
+                case 2: p.useSkillTwo(currentEnemy); break;
+                case 3: p.useSkillThree(currentEnemy); break;
+                default: return false;
+            }
+            return true;
+        } catch (dungeon.exceptions.InsufficientManaException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Not enough mana", JOptionPane.WARNING_MESSAGE);
+            return false;
         }
     }
 
     private void executeEnemyTurn(Player p) {
-        System.out.println(currentEnemy.getName() + " retaliates against " + p.getName() + "!");
-        currentEnemy.basicAttack(p);
+        System.out.println(currentEnemy.getName() + " attacks " + p.getName() + "!");
+        currentEnemy.performAction(p);
 
         if (p.isDead()) {
             System.out.println("☠ " + p.getName() + " has fallen.");
@@ -539,7 +638,7 @@ public class DungeonMayhemGUI extends JFrame {
 
     private void openShop() {
         Player p = gameStatus.getPlayer();
-        Shop shop = gameStatus.getShop();
+        TransactionSystem shop = gameStatus.getShop();
 
         String chosen = showShopDialog(p);
         if (chosen != null) {
@@ -548,7 +647,7 @@ public class DungeonMayhemGUI extends JFrame {
     }
 
     private String showShopDialog(Player p) {
-        Shop shop = gameStatus.getShop();
+        TransactionSystem shop = gameStatus.getShop();
         List<String> recruited = p.getRecruitedClasses();
         int gold = p.getGold();
         boolean isPartyFull = p.getTeam().size() >= 4;
@@ -625,7 +724,7 @@ public class DungeonMayhemGUI extends JFrame {
         return (res == JOptionPane.OK_OPTION && group.getSelection() != null) ? group.getSelection().getActionCommand() : null;
     }
 
-    private void recruitAlly(Player p, Shop shop, String cls) {
+    private void recruitAlly(Player p, TransactionSystem shop, String cls) {
         String allyName = JOptionPane.showInputDialog(this, "What shall we call this " + cls + "?");
         if (allyName == null || allyName.trim().isEmpty()) allyName = cls;
 
@@ -643,6 +742,8 @@ public class DungeonMayhemGUI extends JFrame {
             activeHeroNameLabel.setText(activePlayer.getName() + " [" + activePlayer.getClass().getSimpleName() + "]");
             activeHeroHpBar.updateHealth(activePlayer.getHp(), activePlayer.getMaxHp());
             activeHeroHpText.setText(activePlayer.getHp() + " / " + activePlayer.getMaxHp() + " HP");
+            activeHeroMpBar.updateHealth(activePlayer.getMana(), activePlayer.getMaxMana());
+            activeHeroMpText.setText(activePlayer.getMana() + " / " + activePlayer.getMaxMana() + " MP");
         }
 
         int floor = gameStatus.getCurrentFloor().getFloorNumber();
@@ -651,6 +752,12 @@ public class DungeonMayhemGUI extends JFrame {
         if (currentEnemy != null) {
             enemyNameLabel.setText(currentEnemy.getName());
             enemyHpBar.updateHealth(currentEnemy.getHp(), currentEnemy.getMaxHp());
+            if (currentEnemy.getMaxMana() > 0) {
+                enemyMpBar.setVisible(true);
+                enemyMpBar.updateHealth(currentEnemy.getMana(), currentEnemy.getMaxMana());
+            } else {
+                enemyMpBar.setVisible(false);
+            }
         }
     }
 

@@ -3,11 +3,13 @@ package dungeon.game;
 import dungeon.entities.Player;
 import dungeon.entities.players.*;
 import dungeon.exceptions.GameException;
+import dungeon.interfaces.TransactionSystem;
+import dungeon.interfaces.LevelSystem;
 import dungeon.shop.Shop;
 
 public class GameStatus {
     private Player player;
-    private CurrentFloor currentFloor;
+    private LevelSystem currentFloor;
     private Shop shop;
     private boolean isGameOver;
     private boolean hasWon;
@@ -18,7 +20,7 @@ public class GameStatus {
         this.shop = new Shop();
     }
 
-    public void startGame(String playerName, String playerClass) throws GameException {
+    public void startGame(String playerName, String playerClass) throws dungeon.exceptions.UnknownClassException {
         switch (playerClass.toLowerCase()) {
             case "knight":  this.player = new Knight(playerName);  break;
             case "archer":  this.player = new Archer(playerName);  break;
@@ -27,7 +29,7 @@ public class GameStatus {
             case "priest":  this.player = new Priest(playerName);  break;
             case "paladin": this.player = new Paladin(playerName); break;
             default:
-                throw new GameException("Unknown class: " + playerClass);
+                throw new dungeon.exceptions.UnknownClassException("Unknown class: " + playerClass);
         }
         this.currentFloor = new CurrentFloor();
         this.isGameOver   = false;
@@ -45,7 +47,7 @@ public class GameStatus {
         try {
             currentFloor.incrementFloor();
             System.out.println("Descending to floor " + currentFloor.getFloorNumber() + "...");
-        } catch (GameException e) {
+        } catch (dungeon.exceptions.MaxFloorReachedException e) {
             System.out.println("Error transitioning floors: " + e.getMessage());
         }
     }
@@ -62,8 +64,8 @@ public class GameStatus {
     }
 
     public Player getPlayer()             { return player; }
-    public CurrentFloor getCurrentFloor() { return currentFloor; }
-    public Shop getShop()                 { return shop; }
+    public LevelSystem getCurrentFloor()  { return currentFloor; }
+    public TransactionSystem getShop()                 { return shop; }
     public boolean isGameOver()           { return isGameOver; }
     public boolean hasWon()               { return hasWon; }
     public int getGoldRewardPerFloor()    { return GOLD_PER_FLOOR; }

@@ -1,32 +1,32 @@
 package dungeon.entities;
 
 import dungeon.interfaces.SkillCaster;
+import dungeon.interfaces.Rewardable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player extends Entity implements SkillCaster {
+public abstract class Player extends Entity implements SkillCaster, Rewardable {
     private int level;
     private int range;
     private int gold;
-    private List<Player> team;  // recruited allies
+    private List<Player> team;
 
-    public Player(String name, int maxHp, int defense, int attackDamage, int speed, int range) {
-        super(name, maxHp, defense, attackDamage, speed);
+    public Player(String name, int maxHp, int maxMana, int defense, int attackDamage, int speed, int range) {
+        super(name, maxHp, maxMana, defense, attackDamage, speed);
         this.level  = 1;
         this.range  = range;
         this.gold   = 0;
         this.team   = new ArrayList<>();
     }
 
-    /** Called at the end of each cleared floor */
+    @Override
     public void collectReward(int goldAmount) {
         this.gold += goldAmount;
         System.out.println(getName() + " collected " + goldAmount + " gold! Total: " + this.gold);
     }
 
-    /** Add a recruited ally to the party */
     public boolean recruitCharacter(Player ally) {
-        if (team.size() >= 4) {  // max party size = 5 (player + 4 allies)
+        if (team.size() >= 4) {
             System.out.println("Party is full!");
             return false;
         }
@@ -35,7 +35,6 @@ public abstract class Player extends Entity implements SkillCaster {
         return true;
     }
 
-    /** Spend gold (returns false if not enough) */
     public boolean spendGold(int amount) {
         if (gold < amount) return false;
         gold -= amount;
@@ -47,7 +46,6 @@ public abstract class Player extends Entity implements SkillCaster {
     public int getGold()          { return gold; }
     public List<Player> getTeam() { return team; }
 
-    /** Returns class names already in team (to avoid duplicates in shop) */
     public List<String> getRecruitedClasses() {
         List<String> names = new ArrayList<>();
         for (Player p : team) names.add(p.getClass().getSimpleName());

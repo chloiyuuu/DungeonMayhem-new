@@ -34,6 +34,10 @@ public class GUIStyle {
     public static final Font FONT_MONO   = new Font("Consolas", Font.PLAIN, 13);
     public static final Font FONT_BUTTON = new Font("Segoe UI", Font.BOLD, 14);
 
+    private GUIStyle() {
+        // Private constructor to prevent instantiation
+    }
+
     public static JButton createStyledButton(String text, boolean primary) {
         JButton btn = new JButton(text) {
             @Override

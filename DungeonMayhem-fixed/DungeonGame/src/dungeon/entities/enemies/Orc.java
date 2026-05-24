@@ -4,21 +4,36 @@ import dungeon.entities.Enemy;
 import dungeon.interfaces.Damageable;
 
 public class Orc extends Enemy {
-    // Orc: slow but tanky with high defense, specializes in brute force
     public Orc() {
         super("Orc", 120, 12, 18, 5);
     }
 
-    // Orc slams the ground, dealing heavy damage but leaving itself open
-    public void warCry(Damageable target) {
+    public boolean warCry(Damageable target) {
         System.out.println(getName() + " lets out a War Cry and charges!");
         target.takeDamage(getAttackDamage() + 10);
+        return true;
     }
 
-    // Orc raises its shield, but can still retaliate
-    public void shieldBash(Damageable target) {
+    public boolean shieldBash(Damageable target) {
         System.out.println(getName() + " bashes with its shield!");
         target.takeDamage(getAttackDamage() + 5);
+        return true;
+    }
+
+    @Override
+    public void performAction(Damageable target) {
+        int rand = (int) (Math.random() * 3);
+        switch (rand) {
+            case 0:
+                basicAttack(target);
+                break;
+            case 1:
+                if (!warCry(target)) basicAttack(target);
+                break;
+            case 2:
+                if (!shieldBash(target)) basicAttack(target);
+                break;
+        }
     }
 
     public String getDescription() {
