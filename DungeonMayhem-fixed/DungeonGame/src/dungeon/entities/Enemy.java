@@ -5,5 +5,9 @@ public abstract class Enemy extends Entity {
         super(name, maxHp, 0, defense, attackDamage, speed);
     }
 
+    public Enemy(String name, int maxHp, int maxMana, int defense, int attackDamage, int speed) {
+        super(name, maxHp, maxMana, defense, attackDamage, speed);
+    }
+
     public abstract void performAction(dungeon.interfaces.Damageable target);
 }

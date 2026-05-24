@@ -10,6 +10,7 @@ public abstract class Player extends Entity implements SkillCaster, Rewardable {
     private int range;
     private int gold;
     private List<Player> team;
+    private Player leader;
 
     public Player(String name, int maxHp, int maxMana, int defense, int attackDamage, int speed, int range) {
         super(name, maxHp, maxMana, defense, attackDamage, speed);
@@ -17,6 +18,18 @@ public abstract class Player extends Entity implements SkillCaster, Rewardable {
         this.range  = range;
         this.gold   = 0;
         this.team   = new ArrayList<>();
+        this.leader = null;
+    }
+
+    public void setLeader(Player leader) { this.leader = leader; }
+    public Player getLeader() { return leader; }
+
+    public List<Player> getWholeParty() {
+        List<Player> party = new ArrayList<>();
+        Player main = (this.leader != null) ? this.leader : this;
+        party.add(main);
+        party.addAll(main.getTeam());
+        return party;
     }
 
     @Override
@@ -30,6 +43,7 @@ public abstract class Player extends Entity implements SkillCaster, Rewardable {
             System.out.println("Party is full!");
             return false;
         }
+        ally.setLeader(this);
         team.add(ally);
         System.out.println(ally.getName() + " the " + ally.getClass().getSimpleName() + " joined the party!");
         return true;
@@ -41,8 +55,20 @@ public abstract class Player extends Entity implements SkillCaster, Rewardable {
         return true;
     }
 
+    public void levelUp() {
+        this.level++;
+        setMaxHp(getMaxHp() + 20);
+        setMaxMana(getMaxMana() + 10);
+        setDefense(getDefense() + 3);
+        setAttackDamage(getAttackDamage() + 5);
+        setHp(getMaxHp());
+        setMana(getMaxMana());
+        System.out.println(getName() + " leveled up to " + this.level + "! Stats increased and fully restored!");
+    }
+
     public int getLevel()         { return level; }
     public int getRange()         { return range; }
+    public void setGold(int gold) { this.gold = gold; }
     public int getGold()          { return gold; }
     public List<Player> getTeam() { return team; }
 

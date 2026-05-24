@@ -5,28 +5,40 @@ import dungeon.interfaces.Damageable;
 
 public class FinalBoss extends Enemy {
     public FinalBoss() {
-        super("The Dungeon Lord", 500, 200, 30, 40);
+        super("The Dungeon Lord", 500, 150, 15, 40, 20); // maxHp, maxMana, defense, attackDamage, speed
     }
 
-    public boolean groundSlam(Damageable target) {
-        if (!useMana(20)) return false;
-        System.out.println(getName() + " uses Ground Slam! (AoE)");
-        target.takeDamage(getAttackDamage() + 15);
-        return true;
+    private boolean groundSlam(Damageable target) {
+        try {
+            useMana(20);
+            System.out.println(getName() + " uses Ground Slam! (AoE)");
+            target.takeDamage(getAttackDamage() + 15);
+            return true;
+        } catch (dungeon.exceptions.InsufficientManaException e) {
+            return false;
+        }
     }
 
-    public boolean rainingMeteors(Damageable target) {
-        if (!useMana(40)) return false;
-        System.out.println(getName() + " casts Raining Meteors! (AoE)");
-        target.takeDamage(getAttackDamage() + 25);
-        return true;
+    private boolean rainingMeteors(Damageable target) {
+        try {
+            useMana(30);
+            System.out.println(getName() + " casts Raining Meteors! (AoE)");
+            target.takeDamage(getAttackDamage() + 25);
+            return true;
+        } catch (dungeon.exceptions.InsufficientManaException e) {
+            return false;
+        }
     }
 
-    public boolean bigSlash(Damageable target) {
-        if (!useMana(30)) return false;
-        System.out.println(getName() + " performs a Big Slash! (Line Attack)");
-        target.takeDamage(getAttackDamage() + 35);
-        return true;
+    private boolean bigSlash(Damageable target) {
+        try {
+            useMana(40);
+            System.out.println(getName() + " performs a Big Slash! (Line Attack)");
+            target.takeDamage(getAttackDamage() + 35);
+            return true;
+        } catch (dungeon.exceptions.InsufficientManaException e) {
+            return false;
+        }
     }
 
     @Override

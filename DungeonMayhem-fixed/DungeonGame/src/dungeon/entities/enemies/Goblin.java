@@ -5,7 +5,7 @@ import dungeon.interfaces.Damageable;
 
 public class Goblin extends Enemy {
     public Goblin() {
-        super("Goblin", 70, 5, 14, 20);
+        super("Goblin", 150, 15, 20, 30);
     }
 
     public boolean flurryStab(Damageable target) {

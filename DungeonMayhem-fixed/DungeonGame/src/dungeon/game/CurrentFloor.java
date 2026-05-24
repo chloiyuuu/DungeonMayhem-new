@@ -1,10 +1,6 @@
 package dungeon.game;
 
 import dungeon.entities.Enemy;
-import dungeon.entities.enemies.Demon;
-import dungeon.entities.enemies.FinalBoss;
-import dungeon.entities.enemies.Goblin;
-import dungeon.entities.enemies.Orc;
 import dungeon.exceptions.GameException;
 import dungeon.interfaces.LevelSystem;
 
@@ -30,14 +26,6 @@ public class CurrentFloor implements LevelSystem {
 
     @Override
     public Enemy generateMonster() {
-        if (floorNumber >= 1 && floorNumber <= 3) {
-            return new Orc();
-        } else if (floorNumber >= 4 && floorNumber <= 6) {
-            return new Goblin();
-        } else if (floorNumber >= 7 && floorNumber <= 9) {
-            return new Demon();
-        } else {
-            return new FinalBoss();
-        }
+        return dungeon.entities.EnemyFactory.createEnemyForFloor(floorNumber);
     }
 }

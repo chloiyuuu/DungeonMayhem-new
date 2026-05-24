@@ -8,19 +8,19 @@ public class Rogue extends Player {
         super(name, 90, 70, 8, 22, 25, 2);
     }
 
-    public void backstab(Damageable target) throws dungeon.exceptions.InsufficientManaException {
-        useMana(15);
+    private void backstab(Damageable target) throws dungeon.exceptions.InsufficientManaException {
+        useMana(25);
         System.out.println("Rogue uses Backstab from stealth!");
-        target.takeDamage(getAttackDamage() + 30);
+        target.takeDamage(getAttackDamage() + 15);
     }
 
-    public void poisonDart(Damageable target) throws dungeon.exceptions.InsufficientManaException {
+    private void poisonDart(Damageable target) throws dungeon.exceptions.InsufficientManaException {
         useMana(10);
         System.out.println("Rogue shoots a Poison Dart!");
         target.takeDamage(getAttackDamage() + 10);
     }
 
-    public void shadowClone(Damageable target) throws dungeon.exceptions.InsufficientManaException {
+    private void shadowClone(Damageable target) throws dungeon.exceptions.InsufficientManaException {
         useMana(25);
         System.out.println("Rogue summons a Shadow Clone to attack!");
         target.takeDamage(getAttackDamage() + 20);

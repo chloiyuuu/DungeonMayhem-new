@@ -5,22 +5,22 @@ import dungeon.interfaces.Damageable;
 
 public class Knight extends Player {
     public Knight(String name) {
-        super(name, 150, 50, 20, 25, 10, 1);
+        super(name, 110, 40, 16, 18, 8, 1);
     }
 
-    public void spinAttack(Damageable target) throws dungeon.exceptions.InsufficientManaException {
+    private void spinAttack(Damageable target) throws dungeon.exceptions.InsufficientManaException {
         useMana(10);
         System.out.println("Knight uses Spin Attack!");
         target.takeDamage(getAttackDamage() + 10);
     }
 
-    public void splashAttack(Damageable target) throws dungeon.exceptions.InsufficientManaException {
+    private void splashAttack(Damageable target) throws dungeon.exceptions.InsufficientManaException {
         useMana(15);
         System.out.println("Knight uses Splash Attack!");
         target.takeDamage(getAttackDamage() + 15);
     }
 
-    public void bigSlash(Damageable target) throws dungeon.exceptions.InsufficientManaException {
+    private void bigSlash(Damageable target) throws dungeon.exceptions.InsufficientManaException {
         useMana(25);
         System.out.println("Knight uses Big Slash!");
         target.takeDamage(getAttackDamage() + 30);

@@ -9,6 +9,8 @@ public class HealthBar extends JPanel {
     private Color barColor;
     private boolean showText;
     private String prefix;
+    private int customFontSize = -1;
+    private int customBarHeight = -1;
 
     public HealthBar() {
         this(100, 100, GUIStyle.ACCENT_GREEN, true, "");
@@ -22,6 +24,16 @@ public class HealthBar extends JPanel {
         this.prefix = prefix;
         setPreferredSize(new Dimension(200, showText ? 24 : 12));
         setOpaque(false);
+    }
+
+    public void setCustomFontSize(int size) {
+        this.customFontSize = size;
+        repaint();
+    }
+
+    public void setCustomBarHeight(int height) {
+        this.customBarHeight = height;
+        repaint();
     }
 
     public void updateHealth(int current, int max) {
@@ -42,8 +54,18 @@ public class HealthBar extends JPanel {
 
         int width = getWidth();
         int height = getHeight();
-        int barHeight = showText ? 8 : height;
-        int yOffset = showText ? height - barHeight : 0;
+        int barHeight = customBarHeight != -1 ? customBarHeight : (showText ? 12 : Math.min(height, 40));
+        int fontSize = customFontSize != -1 ? customFontSize : 12;
+
+        int textHeight = showText ? fontSize + 4 : 0;
+        int yOffset = showText ? textHeight + 4 : (height - barHeight) / 2;
+
+        // Ensure there is space for text above the bar visually if needed, tweaking it based on preference
+        if (showText && customFontSize != -1) {
+            yOffset = textHeight + (height - textHeight - barHeight) / 2;
+        } else if (showText) {
+            yOffset = height - barHeight;
+        }
 
         g2.setColor(GUIStyle.BTN_HOVER);
         g2.fillRoundRect(0, yOffset, width, barHeight, barHeight, barHeight);
@@ -58,9 +80,8 @@ public class HealthBar extends JPanel {
 
         if (showText) {
             String text = prefix + currentValue + " / " + maxValue;
-            g2.setFont(new Font("Segoe UI", Font.BOLD, 12));
+            g2.setFont(new Font("Segoe UI", Font.BOLD, fontSize));
             g2.setColor(GUIStyle.TEXT_MUTED);
-            FontMetrics fm = g2.getFontMetrics();
             int tx = 0;
             int ty = yOffset - 4;
 

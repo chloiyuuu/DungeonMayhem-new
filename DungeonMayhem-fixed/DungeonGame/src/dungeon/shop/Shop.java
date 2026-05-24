@@ -1,7 +1,6 @@
 package dungeon.shop;
 
 import dungeon.entities.Player;
-import dungeon.entities.players.*;
 import dungeon.interfaces.TransactionSystem;
 import java.util.*;
 
@@ -36,13 +35,10 @@ public class Shop implements TransactionSystem {
         int price = getPrice(characterClass);
         if (playerGold < price) return null;
 
-        switch (characterClass) {
-            case "Wizard":  return new Wizard(heroName);
-            case "Archer":  return new Archer(heroName);
-            case "Priest":  return new Priest(heroName);
-            case "Paladin": return new Paladin(heroName);
-            case "Rogue":   return new Rogue(heroName);
-            default:        return null;
+        try {
+            return dungeon.entities.CharacterFactory.createPlayer(characterClass, heroName);
+        } catch (dungeon.exceptions.UnknownClassException e) {
+            return null;
         }
     }
 

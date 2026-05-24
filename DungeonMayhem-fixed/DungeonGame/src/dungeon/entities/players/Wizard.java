@@ -8,19 +8,19 @@ public class Wizard extends Player {
         super(name, 80, 120, 5, 30, 12, 7);
     }
 
-    public void fireball(Damageable target) throws dungeon.exceptions.InsufficientManaException {
+    private void fireball(Damageable target) throws dungeon.exceptions.InsufficientManaException {
         useMana(15);
         System.out.println("Wizard casts Fireball!");
         target.takeDamage(getAttackDamage() + 20);
     }
 
-    public void iceShower(Damageable target) throws dungeon.exceptions.InsufficientManaException {
+    private void iceShower(Damageable target) throws dungeon.exceptions.InsufficientManaException {
         useMana(25);
         System.out.println("Wizard casts Ice Shower!");
         target.takeDamage(getAttackDamage() + 15);
     }
 
-    public void explosion(Damageable target) throws dungeon.exceptions.InsufficientManaException {
+    private void explosion(Damageable target) throws dungeon.exceptions.InsufficientManaException {
         useMana(40);
         System.out.println("Wizard casts Explosion!");
         target.takeDamage(getAttackDamage() + 35);

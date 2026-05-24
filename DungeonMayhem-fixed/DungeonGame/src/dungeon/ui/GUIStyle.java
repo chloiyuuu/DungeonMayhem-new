@@ -8,24 +8,24 @@ import java.awt.geom.RoundRectangle2D;
 
 public class GUIStyle {
 
-    public static final Color BG_MAIN       = new Color(10, 10, 10);
-    public static final Color BG_PANEL      = new Color(20, 20, 20);
-    public static final Color CARD_BORDER   = new Color(40, 40, 40);
+    public static final Color BG_MAIN       = new Color(30, 32, 28);
+    public static final Color BG_PANEL      = new Color(42, 45, 40, 200); // 200 alpha for transparency
+    public static final Color CARD_BORDER   = new Color(75, 80, 70);
 
-    public static final Color TEXT_MAIN     = new Color(230, 230, 230);
-    public static final Color TEXT_MUTED    = new Color(125, 125, 125);
+    public static final Color TEXT_MAIN     = new Color(240, 238, 230);
+    public static final Color TEXT_MUTED    = new Color(160, 160, 150);
 
-    public static final Color ACCENT_BLUE   = new Color(59, 130, 246);
-    public static final Color ACCENT_GREEN  = new Color(16, 185, 129);
-    public static final Color ACCENT_RED    = new Color(239, 68, 68);
-    public static final Color ACCENT_ORANGE = new Color(245, 158, 11);
-    public static final Color ACCENT_PURPLE = new Color(139, 92, 246);
+    public static final Color ACCENT_BLUE   = new Color(90, 130, 160);
+    public static final Color ACCENT_GREEN  = new Color(100, 140, 90);
+    public static final Color ACCENT_RED    = new Color(170, 70, 70);
+    public static final Color ACCENT_ORANGE = new Color(180, 110, 60);
+    public static final Color ACCENT_PURPLE = new Color(120, 100, 150);
 
-    public static final Color BTN_NORMAL    = new Color(30, 30, 30);
-    public static final Color BTN_HOVER     = new Color(50, 50, 50);
-    public static final Color BTN_TEXT      = new Color(230, 230, 230);
-    public static final Color BTN_PRIMARY   = new Color(40, 100, 200);
-    public static final Color BTN_PRIMARY_H = new Color(60, 120, 220);
+    public static final Color BTN_NORMAL    = new Color(50, 55, 48);
+    public static final Color BTN_HOVER     = new Color(70, 75, 65);
+    public static final Color BTN_TEXT      = new Color(240, 238, 230);
+    public static final Color BTN_PRIMARY   = new Color(90, 85, 60);
+    public static final Color BTN_PRIMARY_H = new Color(110, 105, 80);
 
     public static final Font FONT_TITLE  = new Font("Segoe UI", Font.BOLD, 48);
     public static final Font FONT_HEADER = new Font("Segoe UI", Font.BOLD, 18);

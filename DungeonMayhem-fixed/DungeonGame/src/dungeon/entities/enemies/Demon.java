@@ -8,13 +8,13 @@ public class Demon extends Enemy {
         super("Demon", 100, 8, 28, 16);
     }
 
-    public boolean soulDrain(Damageable target) {
+    private boolean soulDrain(Damageable target) {
         System.out.println(getName() + " casts Soul Drain, siphoning your life force!");
         target.takeDamage(getAttackDamage() + 15);
         return true;
     }
 
-    public boolean hellfireRing(Damageable target) {
+    private boolean hellfireRing(Damageable target) {
         System.out.println(getName() + " summons a Hellfire Ring!");
         target.takeDamage(getAttackDamage() + 20);
         return true;

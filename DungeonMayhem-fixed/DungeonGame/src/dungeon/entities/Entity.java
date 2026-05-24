@@ -28,15 +28,23 @@ public abstract class Entity implements Damageable {
         target.takeDamage(this.attackDamage);
         if (this.maxMana > 0) {
             int restore = 10;
-            this.mana = Math.min(this.mana + restore, this.maxMana);
+            setMana(this.mana + restore);
             System.out.println(this.name + " restored " + restore + " MP!");
         }
     }
 
     @Override
     public void takeDamage(int amount) {
+        // Implement Speed check for Dodge (e.g. Speed * 1% chance, max 50%)
+        int dodgeChance = Math.min(this.speed * 1, 50);
+        int rand = (int)(Math.random() * 100);
+        if (rand < dodgeChance) {
+            System.out.println(this.name + " dodged the attack! (Speed " + this.speed + ")");
+            return;
+        }
+
         int actualDamage = Math.max(amount - this.defense, 1);
-        this.hp -= actualDamage;
+        setHp(this.hp - actualDamage);
         System.out.println(this.name + " took " + actualDamage + " damage. Remaining HP: " + this.hp);
     }
 
@@ -47,21 +55,25 @@ public abstract class Entity implements Damageable {
 
     public String getName() { return name; }
     public int getHp() { return hp; }
-    public void setHp(int hp) { this.hp = Math.min(hp, maxHp); }
+    public void setHp(int hp) { this.hp = Math.min(Math.max(0, hp), maxHp); }
     public int getMaxHp() { return maxHp; }
+    public void setMaxHp(int maxHp) { this.maxHp = maxHp; }
     public int getMana() { return mana; }
     public void setMana(int mana) { this.mana = Math.min(Math.max(0, mana), maxMana); }
     public int getMaxMana() { return maxMana; }
+    public void setMaxMana(int maxMana) { this.maxMana = maxMana; }
 
-    public boolean useMana(int amount) throws dungeon.exceptions.InsufficientManaException {
+    public void useMana(int amount) throws dungeon.exceptions.InsufficientManaException {
         if (this.mana >= amount) {
             this.mana -= amount;
-            return false;
+            return;
         }
         throw new dungeon.exceptions.InsufficientManaException(this.name + " doesn't have enough mana!");
     }
 
     public int getDefense() { return defense; }
+    public void setDefense(int defense) { this.defense = defense; }
     public int getAttackDamage() { return attackDamage; }
+    public void setAttackDamage(int attackDamage) { this.attackDamage = attackDamage; }
     public int getSpeed() { return speed; }
 }
