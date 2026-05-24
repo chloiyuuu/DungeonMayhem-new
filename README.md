@@ -15,4 +15,4 @@ The application has been recently migrated to use **Maven** for easy build manag
 - **Save/Load System**: Progress is automatically saved whenever you clear a floor. You can seamlessly resume your game by hitting "Continue" on the Main Menu.
 - **Shop System**: Spend your gold between battles to recruit new party members!
 
-Are you brave enough to conquer the dungeon? 
+# Are you brave enough to conquer the dungeon? 
