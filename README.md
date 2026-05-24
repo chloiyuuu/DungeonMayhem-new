@@ -15,14 +15,4 @@ The application has been recently migrated to use **Maven** for easy build manag
 - **Save/Load System**: Progress is automatically saved whenever you clear a floor. You can seamlessly resume your game by hitting "Continue" on the Main Menu.
 - **Shop System**: Spend your gold between battles to recruit new party members!
 
-## How to Play / Run
-This project uses **Maven**. You can run the application by using the `exec-maven-plugin` configured in the `pom.xml`.
-
-If you have Maven installed, simply run the following command from the root folder containing the `pom.xml`:
-
-```bash
-mvn clean compile
-mvn exec:java
-```
-
 Are you brave enough to conquer the dungeon? 
