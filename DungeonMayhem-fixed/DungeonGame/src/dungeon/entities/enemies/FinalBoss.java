@@ -5,7 +5,7 @@ import dungeon.interfaces.Damageable;
 
 public class FinalBoss extends Enemy {
     public FinalBoss() {
-        super("The Dungeon Lord", 500, 150, 15, 40, 20); // maxHp, maxMana, defense, attackDamage, speed
+        super("The Dungeon Lord", 500, 150, 15, 40, 20);
     }
 
     private boolean groundSlam(Damageable target) {

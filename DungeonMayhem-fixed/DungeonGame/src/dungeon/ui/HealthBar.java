@@ -60,7 +60,7 @@ public class HealthBar extends JPanel {
         int textHeight = showText ? fontSize + 4 : 0;
         int yOffset = showText ? textHeight + 4 : (height - barHeight) / 2;
 
-        // Ensure there is space for text above the bar visually if needed, tweaking it based on preference
+
         if (showText && customFontSize != -1) {
             yOffset = textHeight + (height - textHeight - barHeight) / 2;
         } else if (showText) {

@@ -2,14 +2,12 @@ package dungeon.ui;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
 
 public class GUIStyle {
 
     public static final Color BG_MAIN       = new Color(30, 32, 28);
-    public static final Color BG_PANEL      = new Color(42, 45, 40, 200); // 200 alpha for transparency
+    public static final Color BG_PANEL      = new Color(42, 45, 40, 200);
     public static final Color CARD_BORDER   = new Color(75, 80, 70);
 
     public static final Color TEXT_MAIN     = new Color(240, 238, 230);
@@ -35,7 +33,7 @@ public class GUIStyle {
     public static final Font FONT_BUTTON = new Font("Segoe UI", Font.BOLD, 14);
 
     private GUIStyle() {
-        // Private constructor to prevent instantiation
+
     }
 
     public static JButton createStyledButton(String text, boolean primary) {

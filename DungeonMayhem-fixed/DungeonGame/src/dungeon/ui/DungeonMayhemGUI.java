@@ -80,9 +80,9 @@ public class DungeonMayhemGUI extends JFrame {
                 if (bg != null) {
                     g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
                     if (currentScreen.equals("MENU")) {
-                        g.setColor(new Color(0, 0, 0, 180)); // Darker overlay for menu
+                        g.setColor(new Color(0, 0, 0, 180));
                     } else {
-                        g.setColor(new Color(0, 0, 0, 140)); // Slightly lighter for gameplay
+                        g.setColor(new Color(0, 0, 0, 140));
                     }
                     g.fillRect(0, 0, getWidth(), getHeight());
                 }
@@ -247,13 +247,12 @@ public class DungeonMayhemGUI extends JFrame {
         JLabel title = GUIStyle.createStyledLabel("CHARACTER SELECT", GUIStyle.TEXT_MAIN, new Font("Segoe UI", Font.BOLD, 48));
         headerPanel.add(title, BorderLayout.WEST);
 
-        // Add a back button if needed, but let's just stick to the title.
         panel.add(headerPanel, BorderLayout.NORTH);
 
         JPanel splitPane = new JPanel(new GridBagLayout());
         splitPane.setOpaque(false);
 
-        // LEFT: Class Grid
+
         JPanel classListWrapper = new JPanel(new BorderLayout());
         classListWrapper.setOpaque(false);
         classListWrapper.setBorder(new EmptyBorder(0, 0, 0, 20));
@@ -264,7 +263,7 @@ public class DungeonMayhemGUI extends JFrame {
         String[] classes = {"Knight", "Archer", "Rogue"};
         ButtonGroup bg = new ButtonGroup();
 
-        // To hold the image placeholder
+
         JLabel portraitLabel = new JLabel();
         portraitLabel.setHorizontalAlignment(SwingConstants.CENTER);
         portraitLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -335,7 +334,6 @@ public class DungeonMayhemGUI extends JFrame {
     private void updateClassDetails(JPanel detailsPanel, JLabel portraitLabel) {
         detailsPanel.removeAll();
 
-        // -------------------------------------------------------------
         String imagePath = "";
         if (selectedClass.equals("Knight")) {
             imagePath = "C:\\Users\\shdyd\\Downloads\\favpng_413f673ad36d21fd19343f37cb69c12c.png";
@@ -351,9 +349,9 @@ public class DungeonMayhemGUI extends JFrame {
             int origW = icon.getIconWidth();
             int origH = icon.getIconHeight();
             if (origW > 0 && origH > 0) {
-                // Scale proportionately to fit within a 450x650 bounding box
+
                 double ratio = Math.min(450.0 / origW, 650.0 / origH);
-                if (ratio > 1.0) ratio = 1.0; // Prevent scaling up small pixel art icons and making them blurry
+                if (ratio > 1.0) ratio = 1.0;
                 int newW = (int) (origW * ratio);
                 int newH = (int) (origH * ratio);
                 portraitLabel.setIcon(new ImageIcon(img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH)));
@@ -365,10 +363,9 @@ public class DungeonMayhemGUI extends JFrame {
             portraitLabel.setText("<html><div style='text-align: center; color: #888888; font-size: 20px; border: 2px dashed #444444; padding: 250px 80px;'>[ " + selectedClass + " Image ]<br><br><span style='font-size: 12px;'>Insert 8-bit image here</span></div></html>");
             portraitLabel.setIcon(null);
         }
-        // -------------------------------------------------------------
 
         Map<String, int[]> stats = Map.of(
-                // HP, MP, ATK, DEF, SPD
+
                 "Knight",  new int[]{110, 40,  18, 16, 8},
                 "Archer",  new int[]{80, 50,  18, 8, 14},
                 "Rogue",   new int[]{90,  70,  22, 8,  25},
@@ -413,7 +410,7 @@ public class DungeonMayhemGUI extends JFrame {
 
         JPanel statsWrapper = new JPanel(new BorderLayout());
         statsWrapper.setOpaque(false);
-        statsWrapper.setBorder(new EmptyBorder(40, 0, 40, 80)); // Padding
+        statsWrapper.setBorder(new EmptyBorder(40, 0, 40, 80));
         statsWrapper.add(statsGrid, BorderLayout.CENTER);
 
         detailsPanel.add(headerInfo, BorderLayout.NORTH);
@@ -435,7 +432,7 @@ public class DungeonMayhemGUI extends JFrame {
         valLbl.setHorizontalAlignment(SwingConstants.RIGHT);
 
         HealthBar bar = new HealthBar(value, max, color, false, "");
-        bar.setPreferredSize(new Dimension(150, 40)); // Thicker bar
+        bar.setPreferredSize(new Dimension(150, 40));
 
         JPanel barWrapper = new JPanel(new BorderLayout());
         barWrapper.setOpaque(false);
@@ -486,7 +483,7 @@ public class DungeonMayhemGUI extends JFrame {
     private JPanel createBattlePanel() {
         JPanel panel = new JPanel(new BorderLayout(15, 15));
         panel.setOpaque(false);
-        panel.setBorder(new EmptyBorder(20, 50, 20, 50)); // More horizontal padding for fullscreen
+        panel.setBorder(new EmptyBorder(20, 50, 20, 50));
 
         panel.add(createHeaderPanel(),   BorderLayout.NORTH);
 
@@ -599,7 +596,7 @@ public class DungeonMayhemGUI extends JFrame {
         battleLog = new JTextPane();
         battleLog.setOpaque(false);
         battleLog.setEditable(false);
-        battleLog.setBackground(new Color(0, 0, 0, 0)); // Fully transparent
+        battleLog.setBackground(new Color(0, 0, 0, 0));
         battleLog.setForeground(GUIStyle.TEXT_MAIN);
         battleLog.setFont(new Font("Monospaced", Font.BOLD, 22));
         battleLog.setMargin(new Insets(15, 15, 15, 15));
@@ -613,7 +610,7 @@ public class DungeonMayhemGUI extends JFrame {
         scroll.getViewport().setOpaque(false);
         scroll.setOpaque(false);
 
-        // Wrapper will provide the translucent background
+
         JPanel wrapper = new TransparentPanel(new BorderLayout());
         wrapper.setBackground(GUIStyle.BG_PANEL);
         wrapper.setBorder(GUIStyle.createCardBorder());
@@ -807,7 +804,7 @@ public class DungeonMayhemGUI extends JFrame {
         mainPanel.setBackground(GUIStyle.BG_PANEL);
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Header
+
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
         headerPanel.setOpaque(false);
         JLabel titleLabel = GUIStyle.createStyledLabel("Tavern Recruits", GUIStyle.TEXT_MAIN, GUIStyle.FONT_HEADER);
@@ -826,13 +823,13 @@ public class DungeonMayhemGUI extends JFrame {
         }
         mainPanel.add(topContainer, BorderLayout.NORTH);
 
-        // List of recruits + heal
+
         JPanel gridPanel = new JPanel(new GridLayout(shop.getAllPrices().size() + 1, 1, 10, 10));
         gridPanel.setOpaque(false);
 
         ButtonGroup group = new ButtonGroup();
 
-        // Add FULL HEAL option
+
         JPanel healPanel = new JPanel(new BorderLayout(10, 10));
         healPanel.setBackground(GUIStyle.BG_MAIN);
         healPanel.setBorder(BorderFactory.createCompoundBorder(

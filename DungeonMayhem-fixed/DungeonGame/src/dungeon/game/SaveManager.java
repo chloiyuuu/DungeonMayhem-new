@@ -37,13 +37,13 @@ public class SaveManager {
             int gold = Integer.parseInt(reader.readLine());
             int floorNum = Integer.parseInt(reader.readLine());
 
-            // Initialize game with loaded data
+
             gameStatus.startGame(name, className);
             gameStatus.getPlayer().setHp(hp);
             gameStatus.getPlayer().setMana(mana);
             gameStatus.getPlayer().setGold(gold);
 
-            // Fast-forward to the saved floor
+
             for (int i = 1; i < floorNum; i++) {
                 gameStatus.getCurrentFloor().incrementFloor();
             }

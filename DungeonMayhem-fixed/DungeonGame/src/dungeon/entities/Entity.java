@@ -35,7 +35,7 @@ public abstract class Entity implements Damageable {
 
     @Override
     public void takeDamage(int amount) {
-        // Implement Speed check for Dodge (e.g. Speed * 1% chance, max 50%)
+
         int dodgeChance = Math.min(this.speed * 1, 50);
         int rand = (int)(Math.random() * 100);
         if (rand < dodgeChance) {
